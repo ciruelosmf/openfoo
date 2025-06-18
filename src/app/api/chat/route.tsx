@@ -59,6 +59,7 @@ export async function POST(req: NextRequest) {
         messages: cleanedMessages,
         // --- THIS IS THE MAGIC KEY TO MAKE IT STREAM ---
         stream: true, 
+         "max_tokens": 4096,
       })
     });
 
