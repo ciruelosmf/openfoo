@@ -1,9 +1,9 @@
 
+# OpenFoo
 
+There isn’t a real problem being solved here — OpenFoo simply offers an open source, new User interface for establishing a conversation with the LLM. It’s like a Winamp skin, but for a chat session.
 
-There isn’t a real problem being solved here — OpenFoo simply offers an OpenFoo, new User interface for establishing a conversation with the LLM. It’s like a Winamp skin, but for a chat session.
-
-LLM Chats reimagined.
+### LLM Chats reimagined.
 
 We do believe it’s important to have a proper and personal way of communicating with the LLM.
 
@@ -18,67 +18,66 @@ Whitelist of models:
 'openai/o1-pro',
 
 NOTE: currently, only "cons" theme allows for model selection, all other models use 'google/gemini-2.5-flash' as model.
+
 ---------------------------------------
 ---------------------------------------
 ---------------------------------------
 
 
 
-How to Run This Project
+# How to Run This Project
 
 You can test this application via the live demo or by setting it up locally. For the competition, judges are encouraged to use the local setup with their own API keys.
-1. Live Demo
-Experience the deployed application instantly.
 
 
-1. Visit	Go to openfoo.vercel.app
-2. Log In	Authenticate using your Google account.
-3. Chat	Start a conversation!
-Note: The live demo uses a shared API key and may be subject to rate limits. For the full experience, please run the project locally.
+### 1.  Experience the deployed application instantly.
+1. 	Go to https://openfoo.vercel.app
+2. 	Authenticate using your Google account.
+3. 	Start a conversation!
 
-2. Local Development (Recommended for Judges)
+## Note: The live demo uses a shared API key and may be subject to rate limits. For the full experience, please run the project locally.
+
+
+### 2. Local Development (Recommended for Judges)
 This method gives you full control and uses your personal API keys.
-Clone & Install:
 
-git clone  https://github.com/ciruelosmf/openfoo
-cd openfoo
-npm install
+#### Clone & Install:
 
-
-Configure Environment: Copy the example file to create your local configuration.
-
-
-cp .env.example .env.local
+1.  git clone  https://github.com/ciruelosmf/openfoo
+2.  cd openfoo
+3.  npm install
+4.  Configure Environment: Copy the example file to create your local configuration.
+5. cp .env.example .env.local
+6. Add Your API Keys: Edit the new .env.local file and add your secret keys.
 
 
-Add Your API Keys: Edit the new .env.local file and add your secret keys.
+ 
 
+### Authentication Provider (clerk.com)
 
-# .env.local
-
-# Authentication Provider (clerk.com)
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_..."
+
 CLERK_SECRET_KEY="sk_..."
 
-# AI Provider (openrouter.ai)
+### AI Provider (openrouter.ai)
 OPENROUTER_API_KEY="sk-or-..."
 
 
-Launch:
+# Launch:
 
 
-npm run dev
-Use code with caution.
+#### npm run dev
+ 
 
 
-The application will be available at http://localhost:3000.
+# The application will be available at http://localhost:3000.
 
 ---------------------------------------
 ---------------------------------------
 ---------------------------------------
 
 
-CODEBASE STRUCTURE:
+# CODEBASE STRUCTURE:
 
 project-root/
 ├── src/

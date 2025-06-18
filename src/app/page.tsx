@@ -263,6 +263,9 @@ export default function HomePage() {
                   <Link href="/about" className={`${spaceGrotesk.className} text-slate-400 hover:text-white transition-colors`}>
                     About OpenFoo
                   </Link>
+                                    <Link href="https://github.com/ciruelosmf/openfoo" className={`${spaceGrotesk.className} text-slate-400 hover:text-white transition-colors`}>
+                    GitHub
+                  </Link>
                 </li>
                 <li>
  
