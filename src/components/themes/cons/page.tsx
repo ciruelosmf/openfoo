@@ -30,7 +30,7 @@ interface QAPair {
 export default function ConsoleChatPage() {
     // --- ADDED: State to manage the selected AI provider ---
     // The state is declared *before* useChat so it can be used in the hook's options.
-    const [selectedProvider, setSelectedProvider] = useState('google'); // Default provider
+    const [selectedProvider, setSelectedProvider] = useState('google/gemini-2.5-flash'); // Default provider
 
     // --- MODIFIED: The useChat hook now sends the provider state to the API ---
     const { messages, input, handleInputChange, handleSubmit, isLoading, error, setMessages } = useChat({
@@ -187,7 +187,7 @@ export default function ConsoleChatPage() {
                         className="flex items-end gap-3 w-full max-w-2xl"
                     >
                         {/* --- ADDED: The provider selector dropdown --- */}
-                        <div className="flex flex-col gap-1">
+                        <div className="flex flex-row gap-2 items-center">
                             <label htmlFor="provider-select" className="text-xs text-gray-400 pl-1">AI Model</label>
                             <select
                                 id="provider-select"
@@ -196,9 +196,9 @@ export default function ConsoleChatPage() {
                                 disabled={isLoading}
                                 className="h-[60px] bg-gray-900 border border-gray-700 rounded-sm p-2 focus:ring-1 focus:ring-red-400 focus:outline-none text-sm"
                             >
-                                <option value="google">Google</option>
-                                <option value="openai">OpenAI</option>
-                                <option value="anthropic">Anthropic</option>
+                                <option value="google/gemini-2.5-flash">Google</option>
+                                <option value="openai/o1-pro">OpenAI</option>
+               
                             </select>
                         </div>
                         

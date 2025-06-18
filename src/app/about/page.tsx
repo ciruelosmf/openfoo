@@ -53,7 +53,7 @@ export default function HomePage() {
                 />
               </div>
               <span className={`${tekoFont.className} text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors`}>
-                GenFoo
+                OpenFoo
               </span>
             </Link>
 
@@ -86,7 +86,7 @@ export default function HomePage() {
               <h1 className={`${tekoFont.className} text-9xl sm:text-[222px] lg:text-[322px] xl:text-[422px] font-bold tracking-tight`}>
                 <span className="leading-[0.5] bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 
  bg-clip-text text-transparent">
-                  GenFoo
+                  OpenFoo
                 </span>
               </h1>
               <div className="absolute -inset-4 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-blue-800/20 blur-3xl -z-10 opacity-30"></div>
@@ -96,9 +96,7 @@ export default function HomePage() {
               We aim to make AI and LLMs personal.
             </p>
             
-            <p className={`${inter.className} mt-1 text-xl sm:text-2xl text-slate-600 max-w-3xl mx-auto leading-relaxed`}>
-              These programs are helpful and useful. We need to learn and adapt the new civ object.
-            </p>
+ 
           </div>
         </div>
       </section>
@@ -119,107 +117,57 @@ export default function HomePage() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            <div className="my-12 flex flex-col sm:flex-row items-center justify-center gap-4">
  
-              <Link
-                href="/buycredits"
-                className={`${inter.className} px-4 py-2 bg-white hover:bg-slate-50 text-slate-900 font-semibold rounded-xl border-2 border-slate-200 hover:border-slate-300 transition-all duration-300`}
-              >
-                View Pricing
-              </Link>
-            </div>
 
-      {/* Footer */}
-      <footer className="bg-slate-900 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8 mb-12">
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-3 mb-6">
-                <Image
-                  src="/logo_.png"
-                  alt="GenFoo Logo"
-                  width={32}
-                  height={32}
-                  className="rounded-lg"
-                />
-                <span className={`${spaceGrotesk.className} text-xl font-bold`}>GenFoo</span>
-              </div>
-              <p className={`${inter.className} text-slate-400 max-w-md leading-relaxed`}>
-                Transforming AI conversations with beautiful, personalized interfaces that match your unique style and workflow.
-              </p>
-            </div>
+     
+           {/* Footer */}
+           <footer className="bg-slate-900 text-white py-16">
+             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+               <div className="grid md:grid-cols-4 gap-8 mb-12">
+                 <div className="md:col-span-2">
+                   <div className="flex items-center space-x-3 mb-6">
+                     <Image
+                       src="/logo_.png"
+                       alt="GenFoo Logo"
+                       width={32}
+                       height={32}
+                       className="rounded-lg"
+                     />
+                     <span className={`${spaceGrotesk.className} text-xl font-bold`}>OpenFoo</span>
+                   </div>
+                   <p className={`${spaceGrotesk.className} text-slate-400 max-w-md leading-relaxed`}>
+                     Transforming AI conversations with beautiful, personalized interfaces that match your unique style and workflow.
+                   </p>
+                 </div>
+     
+                 <div>
+                   <h3 className={`${spaceGrotesk.className} font-semibold mb-4`}>Product</h3>
+                   <ul className="space-y-3">
+                     <li>
+                       <Link href="/about" className={`${spaceGrotesk.className} text-slate-400 hover:text-white transition-colors`}>
+                         About OpenFoo
+                       </Link>
+                     </li>
+                     <li>
+      
+                     </li>
+                   </ul>
+                 </div>
+     
+      
+               </div>
+     
+               <div className="border-t border-slate-800 pt-8 flex flex-col sm:flex-row justify-between items-center">
+                 <p className={`${spaceGrotesk.className} text-slate-400 text-sm`}>
+                   © 2025 OpenFoo. MIT, Apache, BSD licenses.
+                 </p>
+      
+               </div>
+             </div>
+           </footer>
 
-            <div>
-              <h3 className={`${spaceGrotesk.className} font-semibold mb-4`}>Product</h3>
-              <ul className="space-y-3">
-                <li>
-                  <Link href="/about" className={`${inter.className} text-slate-400 hover:text-white transition-colors`}>
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/buycredits" className={`${inter.className} text-slate-400 hover:text-white transition-colors`}>
-                    Pricing
-                  </Link>
-                </li>
-              </ul>
-            </div>
 
-            <div>
-              <h3 className={`${spaceGrotesk.className} font-semibold mb-4`}>Other Projects</h3>
-              <ul className="space-y-3">
-                <li>
-                  <Link href="https://rocketcatcher69.vercel.app" className={`${inter.className} text-slate-400 hover:text-white transition-colors`}>
-                    RocketCatcher69
-                  </Link>
-                </li>
-                <li>
-                  <Link href="https://t.me/tate_chess_bot" className={`${inter.className} text-slate-400 hover:text-white transition-colors`}>
-                    Tate Chess Bot
-                  </Link>
-                </li>
-                <li>
-                  <Link href="https://www.aiimageandvideogenerators.xyz/" className={`${inter.className} text-slate-400 hover:text-white transition-colors`}>
-                    AI Generators
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
 
-          <div className="border-t border-slate-800 pt-8 flex flex-col sm:flex-row justify-between items-center">
-            <p className={`${inter.className} text-slate-400 text-sm`}>
-              © 2025 GenFoo. All rights reserved.
-            </p>
-            <div className="flex space-x-6 mt-4 sm:mt-0">
-              <Link href="/privacy" className={`${inter.className} text-slate-400 hover:text-white transition-colors text-sm`}>
-                Privacy Policy
-              </Link>
-              <Link href="/terms" className={`${inter.className} text-slate-400 hover:text-white transition-colors text-sm`}>
-                Terms of Service
-              </Link>
-              <a href="mailto:blueparrottech@gmail.com" className={`${inter.className} text-slate-400 hover:text-white transition-colors text-sm`}>
-                Contact
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
     </main>
   );
 }
