@@ -17,7 +17,7 @@ Whitelist of models:
 'google/gemini-2.5-flash',  
 'openai/o1-pro',
 
-
+NOTE: currently, only "cons" theme allows for model selection, all other models use 'google/gemini-2.5-flash' as model.
 ---------------------------------------
 ---------------------------------------
 ---------------------------------------
