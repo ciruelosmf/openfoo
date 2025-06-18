@@ -4,18 +4,12 @@ import { clerkMiddleware, createRouteMatcher  } from "@clerk/nextjs/server";
 
 
 
-/* 
- 
-
-
-
 
 
   const isProtectedRoute = createRouteMatcher(
     [
     '/theme(.*)',
-    '/buycredits',
-  '/api/stripe/checkout(.*)',
+ 
 
   '/api/chat(.*)'
 
@@ -25,6 +19,11 @@ import { clerkMiddleware, createRouteMatcher  } from "@clerk/nextjs/server";
 
 
 
+
+
+
+/* 
+ 
 
 
 */
@@ -50,11 +49,6 @@ export default clerkMiddleware( async  (auth, req) =>  {
 
 
 
-/* 
-     
-
-
-
 
 
    if (isProtectedRoute(req)) {
@@ -63,6 +57,11 @@ export default clerkMiddleware( async  (auth, req) =>  {
 
 
 
+
+
+
+/* 
+     
 
 
 */
