@@ -1,0 +1,62 @@
+/* app/components/TickerDisplay.module.css */
+.tickerWrap {
+  width: 100%;
+  overflow: hidden; /* This is crucial */
+  background-color: #222;
+  color: #e0e0e0;
+  padding: 10px 0;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  font-family: Arial, sans-serif;
+  font-size: 1.2rem;
+  /* No position: relative needed here if tickerMove is position: relative
+     and tickerWrap is a normal block-level element.
+     The containing block for tickerMove's 'left' will be tickerWrap. */
+}
+
+.tickerMove {
+  /* --- MODIFICATION START --- */
+  position: relative; /* Allows 'left' to position it relative to its normal flow position */
+  left: 100%;         /* Moves the starting point of the element to the right edge of its container (.tickerWrap) */
+                      /* This means its content will start off-screen to the right. */
+  /* --- MODIFICATION END --- */
+
+  display: inline-block; /* Makes its width fit its content */
+  white-space: nowrap;   /* Ensures all tickerItem elements stay on one line */
+
+  /* Animation properties */
+  animation-name: scrollText;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  /* animation-duration is set dynamically via style prop in the component */
+}
+
+.tickerMove:hover {
+  animation-play-state: paused; /* Pause on hover */
+}
+
+.tickerItem {
+  display: inline-block; /* Or just inline, as white-space: nowrap is on parent */
+  padding: 0 2rem;       /* Spacing for aesthetics around text segments */
+}
+
+@keyframes scrollText {
+  0% {
+    /*
+     * The element's static position is already 'left: 100%'.
+     * transform: translateX(0%) means no *additional* translation from that static position.
+     * So, at the beginning of the animation, the left edge of .tickerMove
+     * (and thus the start of its content) is at the right edge of .tickerWrap.
+     */
+    transform: translateX(0%);
+  }
+  100% {
+    /*
+     * Move the element to the left by 50% of its own width.
+     * Since .tickerMove contains two .tickerItem elements (each holding the duplicated displayText),
+     * moving it by 50% of its total width means it has scrolled by the width of one .tickerItem.
+     * This creates the seamless loop because the second .tickerItem moves into the
+     * position where the first one started (relative to the animation cycle).
+     */
+    transform: translateX(-50%);
+  }
+}

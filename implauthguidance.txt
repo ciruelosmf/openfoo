@@ -1,0 +1,1021 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Yes, it's definitely possible and a common pattern to place Clerk's UserButton (which handles the profile picture, dropdown menu for profile, and sign-out) inside your side menu.
+
+
+Here's how you can modify your ThemePageWrapper.tsx to include it:
+
+
+src/components/ThemePageWrapper.tsx
+
+
+// src/components/ThemePageWrapper.tsx
+"use client";
+
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Button } from "@/components/ui/button";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+// Remove the static Avatar imports if UserButton fully replaces it
+// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Home, MessageSquarePlus, Menu, CreditCard, AlertCircle, Loader2 } from 'lucide-react';
+
+// Import Clerk components
+import { SignedIn, SignedOut, UserButton, SignInButton, SignUpButton } from "@clerk/nextjs";
+
+interface ThemePageWrapperProps {
+  children: React.ReactNode;
+}
+
+export default function ThemePageWrapper({ children }: ThemePageWrapperProps) {
+  const router = useRouter();
+  const [credits, setCredits] = useState<number | null>(null);
+  const [isLoadingCredits, setIsLoadingCredits] = useState<boolean>(true);
+  const [creditsError, setCreditsError] = useState<string | null>(null);
+
+  // --- Fetch Credits ---
+  useEffect(() => {
+    const fetchCredits = async () => {
+      // Only fetch credits if the user is signed in (optional, but good practice)
+      // You might need to get the userId or session status from Clerk here if your API requires it
+      // For now, let's assume it fetches based on the session cookie
+      setIsLoadingCredits(true);
+      setCreditsError(null);
+      try {
+        const response = await fetch('/api/credits');
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setCredits(data.credits);
+      } catch (error: any) {
+        console.error("Failed to fetch credits:", error);
+        setCreditsError(error.message || "Could not load credits.");
+      } finally {
+        setIsLoadingCredits(false);
+      }
+    };
+
+    // Consider fetching credits only when the component mounts or when auth state changes
+    // For simplicity, keeping the original logic, but you might want to tie this to Clerk's auth state.
+    // fetchCredits(); // You had this commented out, uncomment if you want it to run
+  }, []);
+
+  const handleNewChat = () => {
+    // Potentially clear current chat state before navigating
+    router.push('/'); // Or to a specific new chat route if you have one
+  };
+
+  const handleGoHome = () => {
+    router.push('/');
+  };
+
+  return (
+    <div className="theme-page-container relative">
+      {children}
+      <div style={{ position: 'fixed', top: '20px', right: '20px', zIndex: 100 }}>
+        <Drawer direction="left">
+          <DrawerTrigger asChild>
+            <Button variant="outline" size="icon">
+              <Menu className="h-4 w-4" />
+              <span className="sr-only">Open Menu</span>
+            </Button>
+          </DrawerTrigger>
+          <DrawerContent className="w-[250px] h-full flex flex-col">
+            <DrawerHeader className="p-4 border-b">
+              <DrawerTitle className="text-center">Menu</DrawerTitle>
+            </DrawerHeader>
+
+            <div className="flex flex-col items-center p-4 space-y-3 flex-grow"> {/* Adjusted space-y */}
+              {/* --- Clerk User Button / Sign In/Up --- */}
+              <SignedIn>
+                <div className="mb-4 w-full flex justify-center">
+                  <UserButton
+                    afterSignOutUrl="/" // Redirect to home page after sign out
+                    appearance={{
+                      elements: {
+                        avatarBox: "w-20 h-20", // Make avatar larger if desired
+                      }
+                    }}
+                  />
+                </div>
+              </SignedIn>
+              <SignedOut>
+                <div className="flex flex-col space-y-2 w-full items-center mb-4">
+                  {/* You can use Clerk's buttons directly or wrap your own */}
+                  <SignInButton mode="modal">
+                    <Button variant="outline" className="w-full max-w-[180px]">Login</Button>
+                  </SignInButton>
+                  <SignUpButton mode="modal">
+                    <Button variant="default" className="w-full max-w-[180px]">Sign Up</Button>
+                  </SignUpButton>
+                </div>
+              </SignedOut>
+              {/* --- End Clerk User Button --- */}
+
+
+              <DrawerClose asChild>
+                <Button variant="ghost" className="w-full justify-start" onClick={handleNewChat}>
+                  <MessageSquarePlus className="mr-2 h-4 w-4" />
+                  New Chat
+                </Button>
+              </DrawerClose>
+
+              <DrawerClose asChild>
+                <Button variant="ghost" className="w-full justify-start" onClick={handleGoHome}>
+                  <Home className="mr-2 h-4 w-4" />
+                  Homepage
+                </Button>
+              </DrawerClose>
+
+              {/* --- Credits Display --- */}
+              {/* Show credits only if signed in, as credits are user-specific */}
+              <SignedIn>
+                <div className="w-full px-2 py-3 border-t border-b my-2">
+                  {isLoadingCredits && (
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Loading credits...
+                    </div>
+                  )}
+                  {creditsError && !isLoadingCredits && (
+                    <div className="flex items-center text-sm text-red-500">
+                      <AlertCircle className="mr-2 h-4 w-4" />
+                      {creditsError}
+                    </div>
+                  )}
+                  {credits !== null && !isLoadingCredits && !creditsError && (
+                    <div className="flex items-center text-sm font-medium">
+                      <CreditCard className="mr-2 h-4 w-4 text-blue-500" />
+                      Credits Left: {credits}
+                    </div>
+                  )}
+                  {/* Consider adding a link/button to buy credits here */}
+                  <Button
+                    variant="link"
+                    size="sm"
+                    className="w-full mt-2 justify-start pl-0 text-blue-600 dark:text-blue-400"
+                    onClick={() => router.push('/buycredits')} // Assuming /buycredits is your page
+                  >
+                    Buy More Credits
+                  </Button>
+                </div>
+              </SignedIn>
+              {/* --- End Credits Display --- */}
+            </div>
+
+            {/* Optional: Add a sign out button explicitly if UserButton isn't enough,
+                but UserButton already contains sign out functionality.
+            <SignedIn>
+              <div className="p-4 border-t">
+                <SignOutButton>
+                  <Button variant="outline" className="w-full">Sign Out</Button>
+                </SignOutButton>
+              </div>
+            </SignedIn>
+            */}
+          </DrawerContent>
+        </Drawer>
+      </div>
+    </div>
+  );
+}
+
+Key Changes and Explanations:
+
+
+
+
+Import Clerk Components:
+
+
+import { SignedIn, SignedOut, UserButton, SignInButton, SignUpButton } from "@clerk/nextjs";
+
+We need SignedIn and SignedOut to conditionally render UI based on authentication status, and UserButton for the profile display/actions when logged in. SignInButton and SignUpButton are added to provide login/signup options in the menu when the user is logged out.
+
+
+
+
+Replace Static Avatar with UserButton:
+
+
+
+Inside the DrawerContent and the main div for menu items:
+<SignedIn>
+  <div className="mb-4 w-full flex justify-center"> {/* Wrapper for centering and spacing */}
+    <UserButton
+      afterSignOutUrl="/" // Important: Where to go after signing out
+      appearance={{
+        elements: {
+          avatarBox: "w-20 h-20", // Example: Customize avatar size
+        }
+      }}
+    />
+  </div>
+</SignedIn>
+
+
+The <SignedIn> component ensures that the <UserButton> only renders if the user is authenticated.
+
+afterSignOutUrl="/": This tells Clerk where to redirect the user after they click "Sign out" from the UserButton's dropdown.
+
+appearance: The UserButton (and other Clerk components) can be customized. Here, I've shown an example of how to make the avatar box larger if you want it to match your previous w-20 h-20 styling. You can explore more Clerk Appearance Customization options.
+
+The div wrapper with w-full flex justify-center helps in centering the UserButton if its default alignment isn't centered.
+
+
+
+
+Add Login/Sign Up for Signed-Out Users:
+
+
+<SignedOut>
+  <div className="flex flex-col space-y-2 w-full items-center mb-4">
+    <SignInButton mode="modal">
+      <Button variant="outline" className="w-full max-w-[180px]">Login</Button>
+    </SignInButton>
+    <SignUpButton mode="modal">
+      <Button variant="default" className="w-full max-w-[180px]">Sign Up</Button>
+    </SignUpButton>
+  </div>
+</SignedOut>
+
+
+The <SignedOut> component ensures these buttons only appear if the user is not authenticated.
+
+SignInButton and SignUpButton are used to trigger Clerk's authentication modals.
+
+You can style the trigger buttons as needed.
+
+
+
+
+Conditional Credits Display:
+
+
+<SignedIn>
+  <div className="w-full px-2 py-3 border-t border-b my-2">
+    {/* ... credits loading and display logic ... */}
+    <Button
+      variant="link"
+      size="sm"
+      className="w-full mt-2 justify-start pl-0 text-blue-600 dark:text-blue-400"
+      onClick={() => router.push('/buycredits')}
+    >
+      Buy More Credits
+    </Button>
+  </div>
+</SignedIn>
+
+It makes sense to only show the "Credits Left" section and the "Buy More Credits" button if the user is actually signed in, as credits are typically tied to a user account.
+
+
+
+
+Fetching Credits (Consideration):
+You might want to trigger fetchCredits only when a user is signed in. You can use Clerk's hooks like useUser or useSession to get the authentication status and then conditionally fetch.
+For example:
+
+
+import { useUser } from "@clerk/nextjs";
+// ...
+const { isSignedIn } = useUser();
+
+useEffect(() => {
+  if (isSignedIn) { // Only fetch if user is signed in
+    fetchCredits();
+  } else {
+    setCredits(null); // Clear credits if user signs out
+    setIsLoadingCredits(false);
+  }
+}, [isSignedIn]); // Re-run when isSignedIn status changes
+
+If you implement this, make sure to uncomment the fetchCredits() call inside the useEffect.
+
+  
+
+
+How it Works:
+
+
+
+The ThemePageWrapper is now aware of the user's authentication state through Clerk's components.
+
+If the user is signed in, the <SignedIn> block renders, showing the <UserButton>. This button will display the user's profile picture (if available through Clerk) and a dropdown menu with options like "Manage account" and "Sign out."
+
+If the user is signed out, the <SignedOut> block renders, showing "Login" and "Sign Up" buttons.
+
+The rest of your menu items ("New Chat," "Homepage") remain accessible.
+
+
+Remember to have your Clerk ClerkProvider set up correctly in your layout.tsx and your middleware configured as discussed previously for this to work.
+
+
+
+
+
+
+
+
+
+
+
+Okay, let's integrate Clerk for authentication into your HomePage.
+
+
+Here's how you'll typically set up Clerk with Next.js (App Router) and then modify your HomePage component.
+
+
+Prerequisites (If you haven't done these yet):
+
+
+
+
+Install Clerk:
+
+
+npm install @clerk/nextjs
+# or
+yarn add @clerk/nextjs
+
+
+
+Set up Environment Variables:
+Create a .env.local file in your project root and add your Clerk API keys:
+
+
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_YOUR_PUBLISHABLE_KEY
+CLERK_SECRET_KEY=sk_test_YOUR_SECRET_KEY
+
+# Optional: Set your sign-in, sign-up, and after-sign-in/up redirect URLs
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
+
+Get these keys from your Clerk Dashboard.
+
+
+
+
+Wrap your app with ClerkProvider:
+Modify your src/app/layout.tsx (or app/layout.tsx):
+
+
+// src/app/layout.tsx
+import { ClerkProvider } from '@clerk/nextjs';
+import './globals.css'; // Your global styles
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata: Metadata = {
+  title: 'GenFoo Chat',
+  description: 'Your AI Chat Companion',
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <ClerkProvider>
+      <html lang="en">
+        <body className={inter.className}>{children}</body>
+      </html>
+    </ClerkProvider>
+  );
+}
+
+
+
+Create Clerk Middleware:
+Create a middleware.ts file in your project root (or src/middleware.ts if your app directory is in src):
+
+
+// middleware.ts (or src/middleware.ts)
+import { authMiddleware } from "@clerk/nextjs";
+
+export default authMiddleware({
+  // Routes that can be accessed while signed out
+  publicRoutes: ['/', '/sign-in(.*)', '/sign-up(.*)'], // Allow access to homepage, sign-in, and sign-up
+  // Routes that can always be accessed, and have
+  // no authentication information
+  // ignoredRoutes: ['/no-auth-in-this-route'],
+});
+
+export const config = {
+  // Protects all routes, including api/trpc.
+  // See https://clerk.com/docs/references/nextjs/auth-middleware
+  // for more information about configuring your Middleware
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+};
+
+
+Important: Ensure your HomePage route (/) is in publicRoutes if you want unauthenticated users to see it and the login/signup buttons. If you want the homepage itself to be protected, remove / from publicRoutes.
+
+
+
+
+Create Sign-in and Sign-up Pages:
+Clerk needs pages to host its UI components.
+
+
+
+src/app/sign-in/[[...sign-in]]/page.tsx:
+import { SignIn } from "@clerk/nextjs";
+
+export default function Page() {
+  return (
+    <div className="flex justify-center items-center min-h-screen">
+      <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
+    </div>
+  );
+}
+
+
+src/app/sign-up/[[...sign-up]]/page.tsx:
+import { SignUp } from "@clerk/nextjs";
+
+export default function Page() {
+  return (
+    <div className="flex justify-center items-center min-h-screen">
+      <SignUp path="/sign-up" routing="path" signInUrl="/sign-in" />
+    </div>
+  );
+}
+
+
+
+The [[...sign-in]] and [[...sign-up]] are catch-all route segments that Clerk uses for its internal routing (e.g., for OAuth callbacks).
+
+
+
+
+Modifying your HomePage.tsx
+
+
+Now, let's update your src/app/page.tsx to use Clerk's components:
+
+
+// src/app/page.tsx
+import Image from "next/image";
+import Link from 'next/link';
+import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs"; // Import Clerk components
+
+// Define your available themes here
+const themes = [
+  { name: 'Gho', path: 'theme/gho', description: 'A gho.' },
+  { name: 'Apple II', path: 'theme/appleii', description: 'Apple II-style terminal look.' },
+  { name: 'h', path: 'theme/hackerui', description: 'h and focused.' },
+  { name: '8008', path: 'theme/8008', description: 'Classic Vintage 8008 console.' },
+  { name: 'ghi', path: 'theme/ghi', description: 'Classic Ghibli.' },
+  { name: 'MSN Messenger', path: 'theme/msn', description: 'Nostalgic chat interface from the 2000s.' },
+  { name: 'cons', path: 'theme/cons', description: 'cons code.' },
+];
+
+export default function HomePage() {
+  return (
+    <div className="container mx-auto px-4 py-12">
+      {/* Flex container for title and buttons */}
+      <div className="flex justify-center items-center mb-8">
+        <h1 className="text-4xl font-bold text-gray-800 dark:text-white">
+          GenFoo
+        </h1>
+        <div className="ml-6 flex items-center">
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button
+                type="button"
+                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md text-sm mr-2 transition duration-150 ease-in-out"
+              >
+                Login
+              </button>
+            </SignInButton>
+            <SignUpButton mode="modal">
+              <button
+                type="button"
+                className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md text-sm transition duration-150 ease-in-out"
+              >
+                Sign Up
+              </button>
+            </SignUpButton>
+          </SignedOut>
+          <SignedIn>
+            {/* UserButton manages user profile and sign out */}
+            <UserButton afterSignOutUrl="/" />
+            {/* You could also add a link to a dashboard or other protected area here */}
+            {/* <Link href="/dashboard" className="ml-4 text-blue-500 hover:underline">Dashboard</Link> */}
+          </SignedIn>
+        </div>
+      </div>
+
+      <p className="text-lg text-center text-gray-600 dark:text-gray-300 mb-12">
+        Choose your preferred chat experience below. Each interface offers the same powerful AI, just with a different look and feel.
+      </p>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {themes.map((theme) => (
+          <Link
+            href={theme.path} // This will be relative to your current path, e.g., /theme/gho
+            key={theme.path}
+            className="block p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500"
+          >
+            <h2 className="text-2xl font-semibold mb-2 text-gray-900 dark:text-white">
+              {theme.name} UI
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400">
+              {theme.description}
+            </p>
+            <span className="mt-4 inline-block text-blue-600 dark:text-blue-400 hover:underline">
+              Go to Chat →
+            </span>
+          </Link>
+        ))}
+      </div>
+
+      <p className="text-center text-gray-500 dark:text-gray-400 mt-16">
+        More themes coming soon!
+      </p>
+
+      <div className="flex justify-center items-center mb-8 gap-16 mt-16">
+        <p className="text-center text-gray-500 dark:text-gray-400 ">
+          Pricing: $6 USD/1500 messages
+        </p>
+        <Link
+          href={"/buycredits"}
+          className="block py-2 px-4 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500"
+        >
+          <span className="inline-block text-blue-600 dark:text-blue-400 hover:underline">
+            Buy credits
+          </span>
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+Explanation of Changes in HomePage.tsx:
+
+
+
+Import Clerk Components:
+import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+
+
+<SignedOut>: This component renders its children only if the user is not authenticated.
+
+We wrap the SignInButton and SignUpButton inside it.
+
+
+
+<SignInButton> and <SignUpButton>:
+
+These are Clerk's components that handle the sign-in and sign-up flow.
+
+mode="modal": This tells Clerk to open the sign-in/sign-up UI in a modal dialog. You can also use mode="redirect" if you prefer to redirect to the /sign-in and /sign-up pages you created.
+
+Custom Button Appearance: To use your existing button styling, you can pass your styled <button> elements as children to SignInButton and SignUpButton. Clerk will make these children clickable and trigger its authentication flow.
+
+
+
+<SignedIn>: This component renders its children only if the user is authenticated.
+
+<UserButton />: This is a convenient component from Clerk that displays the user's avatar and provides a dropdown for managing their account (e.g., profile, sign out).
+
+afterSignOutUrl="/": Specifies where to redirect the user after they sign out.
+
+
+
+Routing for Themes and Buy Credits:
+
+Your Link components for themes (href={theme.path}) and buy credits (href={"/buycredits"}) will work as before.
+
+The theme.path values like 'theme/gho' will resolve to /theme/gho because Link resolves paths relative to the current page unless they start with a /. If you intend them to be absolute paths from the root, ensure they start with /, e.g., path: '/theme/gho'. Given your current structure, they are likely intended to be relative, which is fine.
+
+
+
+
+How the Routing Works with Clerk:
+
+
+
+When a user clicks the "Login" button (which is now a child of <SignInButton>), Clerk takes over.
+
+If mode="modal", it opens a modal.
+
+If mode="redirect" (or if you didn't specify a mode and your NEXT_PUBLIC_CLERK_SIGN_IN_URL is set), it would redirect the user to /sign-in.
+
+
+
+The page at /sign-in/[[...sign-in]]/page.tsx renders Clerk's <SignIn /> component, which handles the actual authentication steps (e.g., email/password, social logins).
+
+A similar process happens for the "Sign Up" button and the /sign-up page.
+
+The middleware.ts intercepts requests, checks authentication status, and allows/denies access or redirects as configured.
+
+The <ClerkProvider> in layout.tsx makes authentication state available throughout your application.
+
+
+Now, when you run your app, you should see the "Login" and "Sign Up" buttons. Clicking them will trigger Clerk's authentication UI. Once logged in, these buttons will disappear, and the <UserButton> will appear.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Okay, I've read your `ConsoleChatPage.tsx` code. The main issue you're likely facing with "response formatting" is that AI responses, especially those containing code blocks, lists, or other structured text, won't render nicely with just a `<p className="whitespace-pre-wrap">`.
+
+The "well-known" way to handle this is to have your AI output **Markdown**, and then use a Markdown renderer on the client-side to display it. This will allow for:
+*   **Code blocks** (with syntax highlighting)
+*   Lists (ordered and unordered)
+*   Bold, italics, strikethrough
+*   Links
+*   Headings
+*   Blockquotes
+*   Tables (if using GFM - GitHub Flavored Markdown)
+
+Here's how you can integrate Markdown rendering, focusing on `react-markdown` and a syntax highlighter like `react-syntax-highlighter` (which uses PrismJS or Highlight.js under the hood).
+
+**Key Changes & Recommendations:**
+
+1.  **Install Dependencies:**
+    ```bash
+    npm install react-markdown remark-gfm react-syntax-highlighter prismjs
+    # or
+    yarn add react-markdown remark-gfm react-syntax-highlighter prismjs
+    ```
+    *   `react-markdown`: Core Markdown to HTML renderer.
+    *   `remark-gfm`: Plugin for GitHub Flavored Markdown (tables, strikethrough, etc.).
+    *   `react-syntax-highlighter`: For syntax highlighting code blocks.
+    *   `prismjs`: The actual syntax highlighting engine (you'll also need a theme for it).
+
+2.  **Tailwind Typography (Optional but Recommended for Markdown):**
+    For nice default styling of Markdown content (paragraphs, lists, headings, etc.), the Tailwind Typography plugin is excellent.
+    ```bash
+    npm install -D @tailwindcss/typography
+    # or
+    yarn add -D @tailwindcss/typography
+    ```
+    Then add it to your `tailwind.config.js`:
+    ```javascript
+    // tailwind.config.js
+    module.exports = {
+      // ... other config
+      plugins: [
+        require('@tailwindcss/typography'),
+        // ... other plugins
+      ],
+    };
+    ```
+
+3.  **Update your Component:**
+
+    *   Import the necessary modules.
+    *   Use `ReactMarkdown` to render `pair.aiReply.content`.
+    *   Configure `ReactMarkdown` to use `react-syntax-highlighter` for code blocks.
+    *   Import a PrismJS CSS theme.
+
+Here's the relevant part of your `ConsoleChatPage.tsx` modified:
+
+```tsx
+// src/app/console-chat/page.tsx
+'use client';
+
+import React, { useEffect, useRef, FormEvent, KeyboardEvent, useMemo } from 'react';
+import { useChat, Message } from 'ai/react';
+import { Loader2, SendIcon } from 'lucide-react';
+
+// --- Markdown and Syntax Highlighting Imports ---
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm'; // For GitHub Flavored Markdown (tables, etc.)
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+// Choose a PrismJS theme. Many are available.
+// e.g., vscDarkPlus, okaidia, tomorrow, coy, etc.
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+// Or if you prefer a separate CSS file for PrismJS theme:
+// import 'prismjs/themes/prism-tomorrow.css'; // Example theme
+
+// Define the QAPair interface
+interface QAPair {
+    id: string;
+    userQuestion: Message;
+    aiReply: Message | null;
+}
+
+export default function ConsoleChatPage() {
+    const { messages, input, handleInputChange, handleSubmit, isLoading, error, setMessages } = useChat({
+        api: "/api/chat",
+        onError: (err) => {
+            console.error("Chat API error:", err);
+        }
+    });
+
+    const qaContainerRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLTextAreaElement>(null);
+
+    const qaPairs: QAPair[] = useMemo(() => {
+        const pairs: QAPair[] = [];
+        messages.forEach((msg, index) => {
+            if (msg.role === 'user') {
+                let currentAiReply: Message | null = null;
+                if (index + 1 < messages.length && messages[index + 1].role === 'assistant') {
+                    currentAiReply = messages[index + 1];
+                }
+                pairs.push({
+                    id: msg.id,
+                    userQuestion: msg,
+                    aiReply: currentAiReply,
+                });
+            }
+        });
+        return pairs;
+    }, [messages]);
+
+    useEffect(() => {
+        if (qaContainerRef.current) {
+            setTimeout(() => {
+                if (qaContainerRef.current) {
+                     qaContainerRef.current.scrollLeft = qaContainerRef.current.scrollWidth;
+                }
+            }, 0);
+        }
+    }, [qaPairs]);
+
+    useEffect(() => {
+        if (!isLoading) {
+            inputRef.current?.focus();
+        }
+    }, [isLoading, messages]);
+
+    const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === 'Enter' && !e.shiftKey && !isLoading && input.trim()) {
+            e.preventDefault();
+            handleSubmit({} as FormEvent<HTMLFormElement>);
+        }
+    };
+
+    const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (!isLoading && input.trim()) {
+            handleSubmit(e);
+        }
+    };
+
+    return (
+        <div className="flex flex-col h-screen bg-black text-gray-300 font-mono overflow-hidden">
+            <div
+                ref={qaContainerRef}
+                className="flex flex-1 overflow-x-auto space-x-12 p-4 pt-20 custom-scrollbar"
+            >
+                {qaPairs.length === 0 && !isLoading && (
+                    <div className="flex-1 flex items-center justify-center text-gray-500 italic">
+                        <p>Your conversation will appear here. Ask something to begin!</p>
+                    </div>
+                )}
+                {qaPairs.map((pair, pairIndex) => (
+                    <div
+                        key={pair.id}
+                        className="flex-shrink-0 w-[480px] sm:w-80 md:w-[500px] h-full flex flex-col border border-red-200 rounded-sm overflow-hidden"
+                    >
+                        <div className="border-b border-red-500 p-2.5">
+                            <span className="text-red-500 block text-xs font-semibold mb-1.5 tracking-wider uppercase">Question</span>
+                            <div className="h-28 overflow-y-auto text-xs custom-scrollbar pr-1.5">
+                                <p className="whitespace-pre-wrap">{pair.userQuestion.content}</p>
+                            </div>
+                        </div>
+
+                        <div className="flex-1 flex flex-col p-2.5 overflow-hidden">
+                            <span className="text-red-500 block text-xs font-semibold mb-1.5 tracking-wider uppercase">AI Reply</span>
+                            <div className="flex-1 overflow-y-auto text-xs custom-scrollbar pr-1.5 space-y-2">
+                                {pair.aiReply && (
+                                    // --- MODIFIED FOR MARKDOWN ---
+                                    <ReactMarkdown
+                                        // Add Tailwind Typography classes for general markdown styling
+                                        // prose-sm for smaller text, prose-invert for dark backgrounds
+                                        className="prose prose-sm prose-invert max-w-none"
+                                        remarkPlugins={[remarkGfm]}
+                                        components={{
+                                            // This is how you customize rendering for specific elements
+                                            // Here, we're targeting code blocks (```)
+                                            code({ node, inline, className, children, ...props }) {
+                                                const match = /language-(\w+)/.exec(className || '');
+                                                return !inline && match ? (
+                                                    <SyntaxHighlighter
+                                                        style={vscDarkPlus} // Your chosen Prism theme
+                                                        language={match[1]}
+                                                        PreTag="div" // Use div instead of pre for better styling control
+                                                        // customStyle={{ background: 'transparent', padding: '0' }} // Optional: if you want to control bg from parent
+                                                        {...props}
+                                                    >
+                                                        {String(children).replace(/\n$/, '')}
+                                                    </SyntaxHighlighter>
+                                                ) : (
+                                                    // For inline code (`code`), use a simple <code>
+                                                    <code className={`${className} bg-gray-700 px-1 py-0.5 rounded text-red-400`} {...props}>
+                                                        {children}
+                                                    </code>
+                                                );
+                                            },
+                                            // Optional: Customize other elements like paragraphs, links, etc.
+                                            // p: ({node, ...props}) => <p className="my-1" {...props} />,
+                                            // a: ({node, ...props}) => <a className="text-blue-400 hover:underline" {...props} />,
+                                        }}
+                                    >
+                                        {pair.aiReply.content}
+                                    </ReactMarkdown>
+                                    // --- END MODIFICATION ---
+                                )}
+                                {isLoading && pairIndex === qaPairs.length - 1 && !pair.aiReply && (
+                                    <div className="flex items-center text-gray-400">
+                                        <Loader2 className="h-3 w-3 animate-spin mr-1.5" />
+                                        <span>AI is replying...</span>
+                                    </div>
+                                )}
+                                {error && pairIndex === qaPairs.length - 1 && !pair.aiReply && !isLoading && (
+                                    <p className="text-red-400 text-xs">Error: {error.message}</p>
+                                )}
+                                {!pair.aiReply && !isLoading && !(error && pairIndex === qaPairs.length - 1) && (
+                                     <p className="text-gray-600 italic">Waiting for AI response...</p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {error && qaPairs.length === 0 && (
+                 <div className="p-2 text-center text-xs text-red-400 border-t border-red-500">
+                    Error: {error.message}
+                </div>
+            )}
+
+            <div className="border-t flex items-center border-red-500 p-3">
+                <span className="text-red-500 text-sm font-semibold tracking-wider uppercase mr-4 flex-shrink-0">
+                    Input
+                </span>
+                <div className="flex-1 flex justify-center">
+                    <form
+                        onSubmit={handleFormSubmit}
+                        className="flex items-end gap-3 w-full max-w-2xl"
+                    >
+                        <textarea
+                            ref={inputRef}
+                            value={input}
+                            onChange={handleInputChange}
+                            onKeyDown={handleKeyDown}
+                            placeholder="Type your message..."
+                            className="flex-1 resize-none min-h-[60px] max-h-[180px] bg-gray-900 border border-gray-700 rounded-sm p-2 focus:ring-1 focus:ring-red-500 focus:outline-none text-sm custom-scrollbar"
+                            rows={2}
+                            disabled={isLoading}
+                        />
+                        <button
+                            type="submit"
+                            title="Send (Enter)"
+                            className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center h-[60px] w-[60px] flex-shrink-0"
+                            disabled={isLoading || !input.trim()}
+                        >
+                            {isLoading && (!messages.length || messages[messages.length - 1].role === 'user') ? <Loader2 className="h-6 w-6 animate-spin" /> : <SendIcon className="h-6 w-6" />}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    );
+}
+```
+
+**Explanation of Markdown Changes:**
+
+1.  **Imports:**
+    *   `ReactMarkdown`, `remarkGfm` for Markdown processing.
+    *   `Prism as SyntaxHighlighter` and a theme (`vscDarkPlus`) for code highlighting. You can explore other themes from `react-syntax-highlighter/dist/esm/styles/prism`.
+
+2.  **`ReactMarkdown` Component:**
+    *   `className="prose prose-sm prose-invert max-w-none"`:
+        *   `prose`: Applies Tailwind Typography styles.
+        *   `prose-sm`: Makes the typography slightly smaller, suitable for chat.
+        *   `prose-invert`: Styles for dark backgrounds.
+        *   `max-w-none`: Removes the default max-width from `prose` if you want it to fill its container.
+    *   `remarkPlugins={[remarkGfm]}`: Enables GitHub Flavored Markdown features.
+    *   `components`: This is a powerful prop that lets you override how specific Markdown elements are rendered.
+        *   `code({ node, inline, className, children, ...props })`: This function is called for every code element.
+            *   `inline`: Differentiates between inline code (`` `code` ``) and block code (``` ```).
+            *   `className`: For block code, this will often contain `language-javascript`, `language-python`, etc., if your AI specifies the language.
+            *   `match = /language-(\w+)/.exec(className || '')`: Extracts the language from the class name.
+            *   If it's a block code (`!inline`) and a language is matched, we use `SyntaxHighlighter`.
+                *   `style={vscDarkPlus}`: Applies the imported PrismJS theme.
+                *   `language={match[1]}`: Tells the highlighter which language to use.
+                *   `PreTag="div"`: By default, `SyntaxHighlighter` wraps code in `<pre>`. Using `div` can sometimes give more styling flexibility, especially with Tailwind.
+            *   Otherwise (inline code or no language match), it renders a simple `<code>` tag. I've added some basic styling for inline code.
+
+4.  **AI Output:**
+    *   **Crucially, your AI backend (`/api/chat`) must now be prompted or configured to output its responses in Markdown format.**
+    *   For example, if the AI wants to show a Python code block, it should output:
+        ```markdown
+        Here's the Python code:
+        ```python
+        def hello():
+            print("Hello, world!")
+        ```
+        And here's a list:
+        - Item 1
+        - Item 2
+        ```
+
+5.  **Custom Scrollbar:**
+    You have `custom-scrollbar` class. Ensure you have CSS for this in your global CSS file (e.g., `src/app/globals.css`):
+    ```css
+    /* Example custom scrollbar (Tailwind doesn't directly style scrollbars well cross-browser) */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 8px; /* Width of the scrollbar */
+      height: 8px; /* Height of the scrollbar (for horizontal) */
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #2d3748; /* Color of the tracking area */
+      border-radius: 10px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: #718096; /* Color of the scroll thumb */
+      border-radius: 10px;
+      border: 2px solid #2d3748; /* Creates padding around scroll thumb */
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background-color: #a0aec0; /* Color of the scroll thumb on hover */
+    }
+
+    /* For Firefox */
+    .custom-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: #718096 #2d3748;
+    }
+    ```
+    Adjust colors to match your theme.
+
+By implementing these changes, your chatbot's responses will be much richer and more readable, especially when dealing with code or structured text. Remember to prompt your AI to use Markdown!

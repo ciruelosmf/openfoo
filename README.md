@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
 
-First, run the development server:
+crt style
+https://codepen.io/Grilly86/pen/pNvXxp
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+https://codepen.io/mortydk/pen/xxGrPRP
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Help me develop an AI chatbot app. Main feature is to select one among many UIs (graphical user interface) for the chat session, instead of the deafult one by many AI vendors (the gray toned one).
+Please provide code for the following UI theme for an AI chatbot application: '''
+
+MSN Messenger from the 2000s
+
+'''.
+
+Additional Requirements:
+NEXTJS.
+Each theme must work with a single Tailwind configuration file.
+All themes must adapt to the same base layout file structure.
+Components should be designed to allow theme switching without changing the layout.
+Each theme must be implemented as modular, swappable components (EXMAPLE: ''// src/components/themes/msn_messenger/MSNMessengerTheme.tsx'').
+Components should be self-contained but able to communicate with the main application.
+Assume the api call logic works fine and its implmentation stable and defined.
+Assume there is way to drive all themes code ([chat-theme]/page.tsx ).
+
+CODEBASE STRUCTURE:
+'''
+project-root/
+├── src/
+│   ├── app/
+│   │   ├── page.tsx                  # Main page component for the chat interface
+│   │   └── layout.tsx
+│   │   └── [chat-theme]/
+│   │      │      └── page.tsx 
+│   ├── api/    
+│          │── chat/
+│               │──route                     
+│   └── components/ //                # Additional source files
+│          │── themes/
+│                 │──theme_1
+│                 │──theme_2
+│                 │──theme_n
+├── public/                   # Static assets (images, etc.)
+ 
+├── package.json              # Project dependencies and scripts
+└── README.md                 # Project documentation.
+'''.
+
+CODE CONTEXT :
+
+
+'''typescript
+
+
+
+'''.

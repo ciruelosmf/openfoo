@@ -1,103 +1,284 @@
+"use client";
 import Image from "next/image";
+import Link from 'next/link';
+import { Inter, Space_Grotesk, Teko, Public_Sans } from "next/font/google";
 
-export default function Home() {
+import {
+  SignInButton,
+  SignedIn,
+  UserButton,
+  SignUpButton,
+  SignedOut,
+} from '@clerk/nextjs'
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+const tekoFont = Teko({
+  subsets: ["latin"],
+  weight: "600", // Using a slightly bolder weight for Teko for more impact
+});
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const publicFont = Public_Sans({
+  subsets: ["latin"],
+  weight: "400",
+});
+
+// Define your available themes here
+const themes = [
+  { name: 'Ghosthy', path: 'theme/ghosthy', description: 'A ghostly chat experience', imageUrl: '/ghost.webp' },
+  { name: 'Ghib', path: 'theme/ghi', description: 'Studio Ghibli inspired', imageUrl: '/ghibli.webp' },
+  { name: '8008', path: 'theme/8008', description: 'Retro console vibes', imageUrl: '/8008.webp' },
+  { name: 'Apple II', path: 'theme/appleii', description: 'Classic terminal aesthetic', imageUrl: '/appleii.webp' },
+  { name: 'Cons Code', path: 'theme/cons', description: 'Developer friendly', imageUrl: '/cons.webp' },
+  { name: 'Paper', path: 'theme/paper', description: 'Clean and minimal', imageUrl: '/paper.webp' },
+  { name: 'Spread', path: 'theme/spread', description: 'Docs like', imageUrl: '/chatsheet.webp' },
+  { name: 'Sprod', path: 'theme/sprod', description: 'Experimental chat bubbles', imageUrl: '/sprod.webp' },
+  { name: 'Current cooking', path: 'theme/test_t', description: ' Work in Progress', imageUrl: '/exp.webp' },
+  { name: 'Current cooking 2', path: 'theme/test_t2', description: 'Work in Progress', imageUrl: '/exp.webp' },
+
+];
+
+export default function HomePage() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <main className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-50/30">
+      {/* Navigation */}
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <Link href="/" className="flex items-center space-x-3 group">
+              <div className="relative">
+                <Image
+                  src="/logo_.png"
+                  alt="GenFoo Logo"
+                  width={40}
+                  height={40}
+                  className="rounded-lg shadow-sm group-hover:shadow-md transition-shadow"
+                  priority
+                />
+              </div>
+              <span className={`${tekoFont.className} text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors pt-2`}>
+                OpenFoo
+              </span>
+            </Link>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+
+
+
+
+            <div className="flex items-center space-x-3">
+              <div className="  flex flex-col sm:flex-row items-center justify-center gap-4">
+
+ 
+              </div>
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <button className={`${spaceGrotesk.className} px-4 py-2 text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all duration-200`}>
+                    Sign In
+                  </button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <button className={`${spaceGrotesk.className} px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm hover:shadow-md transition-all duration-200`}>
+                    Get Started
+                  </button>
+                </SignUpButton>
+              </SignedOut>
+              <SignedIn>
+                <UserButton afterSignOutUrl="/" />
+              </SignedIn>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 ">
+          <div className="text-center">
+            <div className="relative">
+              <h1 className={`${tekoFont.className} text-9xl sm:text-[222px] lg:text-[322px] xl:text-[422px] font-bold tracking-tight`}>
+                <span className="leading-[0.5] bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 
+ bg-clip-text text-transparent">
+                  OpenFoo
+                </span>
+              </h1>
+              <div className="absolute -inset-4 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-blue-800/20 blur-3xl -z-10 opacity-30"></div>
+            </div>
+
+            <p className={`${spaceGrotesk.className} mt-1 text-xl sm:text-2xl text-slate-600 max-w-3xl mx-auto leading-relaxed`}>
+              Opensource AI chat with stunning, personalized interfaces that match your style and flow.
+            </p>
+
+
+          </div>
+        </div>
+      </section>
+
+      {/* Themes Section */}
+      <section id="themes" className="py-20">
+        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className={`${spaceGrotesk.className} text-4xl sm:text-5xl font-bold text-slate-900 mb-6`}>
+              Choose Your Style
+            </h2>
+
+          </div>
+          {/* Fewer columns, larger gap, more padding, and min height */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10"> {/* Wider cards */}
+            {themes.map((theme, index) => (
+              <Link
+                href={theme.path}
+                key={theme.path}
+                className="group relative bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-slate-200 hover:border-blue-300 transform hover:-translate-y-2 flex flex-col min-h-[380px]" // Taller cards, flex layout
+              >
+                <div className="aspect-[16/10] lg:aspect-[4/3] relative overflow-hidden"> {/* Maybe a slightly different aspect ratio */}
+                  {theme.imageUrl && (
+                    <Image
+                      src={theme.imageUrl}
+                      alt={`${theme.name} theme preview`}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-700"
+                      priority={index < 2} // Adjust priority if fewer cards are initially visible
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                    <span className={`${spaceGrotesk.className} text-sm font-medium text-slate-700`}>
+                      Try Now →
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-4 flex flex-col  "> {/* More padding, allow content to grow */}
+                  <h3 className={`${spaceGrotesk.className} text-2xl font-semibold text-slate-900 mb-3 group-hover:text-blue-600 transition-colors`}> {/* Slightly larger heading */}
+                    {theme.name}
+                  </h3>
+                  <p className={`${spaceGrotesk.className} text-slate-600 text-base    `}> {/* Slightly larger text, allow to grow */}
+                    {theme.description}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+ 
+        </div>
+      </section>
+
+
+
+
+      {/* Features Section */}
+      <section className="py-20 bg-white/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className={`${spaceGrotesk.className} text-4xl sm:text-5xl font-bold text-slate-900 mb-6`}>
+              Why Choose GenFoo?
+            </h2>
+ 
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a4 4 0 004-4V5z" />
+                </svg>
+              </div>
+              <h3 className={`${spaceGrotesk.className} text-xl font-semibold text-slate-900 mb-3`}>
+                Personalized Experience
+              </h3>
+              <p className={`${spaceGrotesk.className} text-slate-600`}>
+                Choose from carefully crafted themes that reflect your personality and workflow
+              </p>
+            </div>
+
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h3 className={`${spaceGrotesk.className} text-xl font-semibold text-slate-900 mb-3`}>
+                Lightning Fast
+              </h3>
+              <p className={`${spaceGrotesk.className} text-slate-600`}>
+                Optimized interfaces that load instantly and respond seamlessly
+              </p>
+            </div>
+
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              </div>
+              <h3 className={`${spaceGrotesk.className} text-xl font-semibold text-slate-900 mb-3`}>
+                Made with Love
+              </h3>
+              <p className={`${spaceGrotesk.className} text-slate-600`}>
+                Every theme is handcrafted with attention to detail and user experience
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+ 
+
+      {/* Footer */}
+      <footer className="bg-slate-900 text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-4 gap-8 mb-12">
+            <div className="md:col-span-2">
+              <div className="flex items-center space-x-3 mb-6">
+                <Image
+                  src="/logo_.png"
+                  alt="GenFoo Logo"
+                  width={32}
+                  height={32}
+                  className="rounded-lg"
+                />
+                <span className={`${spaceGrotesk.className} text-xl font-bold`}>OpenFoo</span>
+              </div>
+              <p className={`${spaceGrotesk.className} text-slate-400 max-w-md leading-relaxed`}>
+                Transforming AI conversations with beautiful, personalized interfaces that match your unique style and workflow.
+              </p>
+            </div>
+
+            <div>
+              <h3 className={`${spaceGrotesk.className} font-semibold mb-4`}>Product</h3>
+              <ul className="space-y-3">
+                <li>
+                  <Link href="/about" className={`${spaceGrotesk.className} text-slate-400 hover:text-white transition-colors`}>
+                    About OpenFoo
+                  </Link>
+                </li>
+                <li>
+ 
+                </li>
+              </ul>
+            </div>
+
+ 
+          </div>
+
+          <div className="border-t border-slate-800 pt-8 flex flex-col sm:flex-row justify-between items-center">
+            <p className={`${spaceGrotesk.className} text-slate-400 text-sm`}>
+              © 2025 OpenFoo. MIT, Apache, BSD licenses.
+            </p>
+ 
+          </div>
+        </div>
       </footer>
-    </div>
+    </main>
   );
 }

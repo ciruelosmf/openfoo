@@ -1,0 +1,29 @@
+ 
+.terminal {
+  font-family: "AppleII", monospace;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+  
+  image-rendering: pixelated;
+}
+
+.terminalText {
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+   
+  text-shadow: none;
+}
+
+/* Terminal-specific scrollbar styles */
+.terminalScrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.terminalScrollable::-webkit-scrollbar-track {
+  background: #000;
+}
+
+.terminalScrollable::-webkit-scrollbar-thumb {
+  background: #5dfc70;
+  border-radius: 3px;
+}           
