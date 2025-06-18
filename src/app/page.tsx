@@ -31,11 +31,13 @@ const publicFont = Public_Sans({
 
 // Define your available themes here
 const themes = [
-  { name: 'Ghosthy', path: 'theme/ghosthy', description: 'A ghostly chat experience', imageUrl: '/ghost.webp' },
+  { name: 'Cons Code', path: 'theme/cons', description: 'Developer friendly - the only that supports 2 models (Gemini 2.5/OAI o1-pro) ', imageUrl: '/cons.webp' },
+
+
   { name: 'Ghib', path: 'theme/ghi', description: 'Studio Ghibli inspired', imageUrl: '/ghibli.webp' },
   { name: '8008', path: 'theme/8008', description: 'Retro console vibes', imageUrl: '/8008.webp' },
+    { name: 'Ghosthy', path: 'theme/ghosthy', description: 'A ghostly chat experience', imageUrl: '/ghost.webp' },
   { name: 'Apple II', path: 'theme/appleii', description: 'Classic terminal aesthetic', imageUrl: '/appleii.webp' },
-  { name: 'Cons Code', path: 'theme/cons', description: 'Developer friendly', imageUrl: '/cons.webp' },
   { name: 'Paper', path: 'theme/paper', description: 'Clean and minimal', imageUrl: '/paper.webp' },
   { name: 'Spread', path: 'theme/spread', description: 'Docs like', imageUrl: '/chatsheet.webp' },
   { name: 'Sprod', path: 'theme/sprod', description: 'Experimental chat bubbles', imageUrl: '/sprod.webp' },
