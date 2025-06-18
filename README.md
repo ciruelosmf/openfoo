@@ -12,6 +12,11 @@ GenFoo is an AI chat application with personalized interfaces.
 Each theme is designed to create a unique atmosphere for your AI conversations.
  
 
+Whitelist of models:
+
+'google/gemini-2.5-flash',  
+'openai/o1-pro',
+
 
 ---------------------------------------
 ---------------------------------------

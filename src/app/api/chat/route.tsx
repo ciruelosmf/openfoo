@@ -19,8 +19,8 @@ const openrouter = createOpenRouter({
 
 // Your whitelist of models. Ensure these are correct on OpenRouter.
 const ALLOWED_MODELS = new Set([
-    'google/gemini-2.5-flash',
- 
+    'google/gemini-2.5-flash',  
+    'openai/o1-pro',
  
 ]);
  
@@ -57,9 +57,10 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         model: modelId,
         messages: cleanedMessages,
+         
         // --- THIS IS THE MAGIC KEY TO MAKE IT STREAM ---
         stream: true, 
-         "max_tokens": 4096,
+         
       })
     });
 
