@@ -28,13 +28,13 @@ export const maxDuration = 30;
 export async function POST(req: NextRequest) {
   try {
 
-/* 
+ 
     const { userId } = await auth();
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
- */
+ 
 
     // --- (THE FIX #3) Make `provider` optional ---
     // We expect the body to potentially have a `provider` key, but it might not.
