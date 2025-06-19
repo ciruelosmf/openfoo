@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
  // 3. --- Conditional API Routing ---
 
     // ----- ROUTE 1: Use OpenRouter if key is present -----
-    if (OPENROUTER_KEY) {
+    if (OPENROUTER_KEY.length !== 1) {
       console.log(`Using OpenRouter API with model: ${modelToUse}`);
 
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
