@@ -14,8 +14,9 @@ if (!process.env.OPENROUTER_API_KEY) {
 }
 const GOOGLE_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
 const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
+
 if (!OPENROUTER_KEY && !GOOGLE_KEY) {
-  throw new Error("Missing API Key: You must set either OPENROUTER_API_KEY or GOOGLE_API_KEY in your environment variables.");
+  throw new Error("Missing API Key: You must set either OPENROsUTER_API_KEY or GOOGLE_API_KEY in your environment variables.");
 }
  
 // This is the model that will be used if the frontend doesn't specify one.
