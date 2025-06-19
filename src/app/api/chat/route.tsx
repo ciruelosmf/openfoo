@@ -12,7 +12,7 @@ import { auth } from '@clerk/nextjs/server';
 if (!process.env.OPENROUTER_API_KEY) {
   throw new Error("OPENROUTER_API_KEY environment variable is not set");
 }
-const GOOGLE_KEY = process.env.GOOGLE_API_KEY;
+const GOOGLE_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
 const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
 if (!OPENROUTER_KEY && !GOOGLE_KEY) {
   throw new Error("Missing API Key: You must set either OPENROUTER_API_KEY or GOOGLE_API_KEY in your environment variables.");
