@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
       // Ensure the selected model is a Google model before proceeding
       if (!modelToUse.startsWith('google/')) {
         return NextResponse.json(
-          { error: `The server is configured for Google AI, but you requested an invalid model: '${modelToUse}'. Please select a Google model.` },
+          { error: `The server is configured for Google AI, but you requested an invalid model: '${modelToUse}'. Please select a Google model or use OPENROUTER api key in your local machine, since this is vercel deployment with Google's model only.` },
           { status: 400 }
         );
       }
